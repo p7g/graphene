@@ -50,8 +50,13 @@ class Connection(ObjectType):
         abstract = True
 
     @classmethod
-    def __init_subclass_with_meta__(cls, node=None, name=None, **options):
-        _meta = ConnectionOptions(cls)
+    def __init_subclass_with_meta__(cls, _meta=None, node=None, name=None, **options):
+        if _meta:
+            assert isinstance(
+                _meta, ConnectionOptions
+            ), "Received incompatible _meta value. _meta should be an instance of ConnectionOptions"
+        else:
+            _meta = ConnectionOptions(cls)
         assert node, "You have to provide a node in {}.Meta".format(cls.__name__)
         assert isinstance(node, NonNull) or issubclass(
             node, (Scalar, Enum, ObjectType, Interface, Union, NonNull)
